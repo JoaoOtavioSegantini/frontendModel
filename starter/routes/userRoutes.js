@@ -12,6 +12,8 @@ router
 router
 .post('/login', authController.login);
 
+router.use(authController.protect);
+
 router
 .post('/forgotPassword', authController.forgotPassword);
 
@@ -19,16 +21,19 @@ router
 .patch('/resetPassword/:token', authController.resetPassword);
 
 router
- .patch('/updateMyPassword', authController.protect, authController.updatePassword)
+ .patch('/updateMyPassword', authController.updatePassword)
 
 router
- .patch('/updateMe', authController.protect, userController.updateMe)
+ .patch('/updateMe', userController.updateMe)
 
 router
- .delete('/deleteMe', authController.protect, userController.deleteMe)
+ .delete('/deleteMe', userController.deleteMe)
 
 router
-.get('/me', authController.protect, userController.getMe, userController.getUser)
+.get('/me', userController.getMe, userController.getUser)
+
+// Proteger todas as rotas a partir desse middleware, agora todas as outras exigem permissão de administrador
+router.use(authController.restrictTo('admin'));
  
 router
 .route('/')

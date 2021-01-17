@@ -23,7 +23,7 @@ router
 
 router
  .route('/planejamento-mensal/:year')
- .get(tourController.getMonthlyPlan)
+ .get(authController.protect, authController.restrictTo('admin','lead-guide','guide'), tourController.getMonthlyPlan)
 
 router
   .route('/estatisticas')
@@ -31,13 +31,13 @@ router
   
 router
 .route('/')
-.get( authController.protect ,tourController.getAllTours)
-.post(tourController.createTour)
+.get(tourController.getAllTours)
+.post(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.createTour)
 
 router
 .route('/:id')
 .get(tourController.getTour)
-.patch(tourController.updateTour)
+.patch(authController.protect, authController.restrictTo('admin','lead-guide',), tourController.updateTour)
 .delete(authController.protect, authController.restrictTo('admin','lead-guide',), tourController.deleteTour)
 
 
