@@ -112,10 +112,15 @@ if(req.query.page){
 exports.getTour = catchAsync(async (req, res, next) =>{
 
 //  try{
-  const passeio = await Tour.findById(req.params.id).populate({
+
+
+ /*  const passeio = await Tour.findById(req.params.id).populate({
       path: 'guides',
       select: '-__v -passwordChangedAt'
-  });
+  }); */
+  const passeio = await Tour.findById(req.params.id).populate('reviews');
+
+
 // É a mesma coisa que... Tour.findOne({ _id: req.params.id })
 if(!passeio) {
   return next(new AppError('Nenhuma viagem foi encontrada com esse ID', 404));

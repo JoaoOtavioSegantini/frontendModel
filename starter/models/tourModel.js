@@ -107,7 +107,13 @@ const tourSchema = new mongoose.Schema({
               type: mongoose.Schema.ObjectId,
               ref: 'User'
             }  
-          ]
+          ]/* ,
+          reviews: [
+              {
+              type: mongoose.Schema.ObjectId,
+              ref: 'Review'
+            }
+          ]  É uma das possibilidades, mas, nesse caso, decidiu-se pela virtualização utilizando o método .virtual   */
 
 
 }, { 
@@ -117,7 +123,13 @@ const tourSchema = new mongoose.Schema({
 
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7;
-})
+});
+
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: "_id"
+});
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() há ainda o .post com o 'save'
 tourSchema.pre('save', function(next){
