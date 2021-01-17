@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const reviewSchema = new mongoose.Schema({
     review: {
         type: String,
-        required: [, 'O review não pode estar vazio']
+        required: [true, 'O review não pode estar vazio']
     },
     rating: {
         type: Number,

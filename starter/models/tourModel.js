@@ -70,7 +70,8 @@ const tourSchema = new mongoose.Schema({
     images: [String],
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
+        select: false
     },
     startDates: [Date],
     secretTour: {
@@ -107,19 +108,25 @@ const tourSchema = new mongoose.Schema({
               type: mongoose.Schema.ObjectId,
               ref: 'User'
             }  
-          ]/* ,
-          reviews: [
+          ]
+          
+          /* ,
+          reviews: 
               {
               type: mongoose.Schema.ObjectId,
               ref: 'Review'
             }
-          ]  É uma das possibilidades, mas, nesse caso, decidiu-se pela virtualização utilizando o método .virtual   */
+            É uma das possibilidades, mas, nesse caso, decidiu-se pela virtualização utilizando o método .virtual   */
 
 
-}, { 
+}, 
+{ 
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
-})
+});
+
+tourSchema.index({price: 1, ratingAverage: -1});
+tourSchema.index({ slug: 1 });
 
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7;
@@ -137,11 +144,11 @@ tourSchema.pre('save', function(next){
     next();
 });
 
-tourSchema.pre('save', async function(next)  {
-    const guidesPromises = this.guides.map( async id => await User.findById(id))
-   this.guides = await Promise.all(guidesPromises);
-    next();
-});
+//tourSchema.pre('save', async function(next)  {
+//    const guidesPromises = this.guides.map( async id => await User.findById(id))
+//   this.guides = await Promise.all(guidesPromises);
+//    next();
+//});
 
 // QUERY MIDDLEWARE
 //tourSchema.pre('find', function(next){
@@ -150,7 +157,8 @@ tourSchema.pre(/^find/, function(next){
 
     this.start = Date.now();
 
-    next()
+    next();
+
 });
 
 tourSchema.pre(/^find/, function (next) {
@@ -160,13 +168,18 @@ tourSchema.pre(/^find/, function (next) {
     });
 
     next();
-})
+});
+
+tourSchema.post(/^find/, function(docs, next) {
+    console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+    next();
+  });
 
 //AGGREGATION MIDDLEWARE
-tourSchema.pre('aggregate', function(next){
+/* tourSchema.pre('aggregate', function(next){
     this.pipeline().unshift({ $match: { secretTour: { $ne: true }}})
     next();
-})
+}) */
 
 const Tour = mongoose.model('Tour', tourSchema)
 

@@ -76,7 +76,8 @@ exports.updateOne = Model => catchAsync(async (req, res, next) =>{
   //EXECUTE QUERY
      const features = new APIFeatures(Model.find(filter), req.query).filter().sort().limitFields().paginate();
      const doc = await features.query;
-  
+  //para testes 
+   //doc = await features.query.explain();
       res.status(200).json({
           status: 'sucess',
           results: doc.length,
