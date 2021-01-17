@@ -20,6 +20,8 @@ const tourRouter = require('./routes/tourRoutes')
 
 const userRouter = require('./routes/userRoutes')
 
+const reviewRouter = require('./routes/reviewRoutes')
+
 const app = express()
 
 //1- MIDDLEWARE GLOBAL
@@ -82,10 +84,9 @@ next();
 
  
  
- app.use('/api/v1/passeios', tourRouter)
-
-
-app.use('/api/v1/vereadores', userRouter)
+app.use('/api/v1/passeios', tourRouter);
+app.use('/api/v1/vereadores', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
 
