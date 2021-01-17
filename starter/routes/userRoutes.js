@@ -21,12 +21,15 @@ router
 router
  .patch('/updateMyPassword', authController.protect, authController.updatePassword)
 
- router
+router
  .patch('/updateMe', authController.protect, userController.updateMe)
 
- router
+router
  .delete('/deleteMe', authController.protect, userController.deleteMe)
 
+router
+.get('/me', authController.protect, userController.getMe, userController.getUser)
+ 
 router
 .route('/')
 .get(userController.getAllUsers)
@@ -37,5 +40,7 @@ router
 .get(userController.getUser)
 .patch(userController.updateUser)
 .delete(userController.deleteUser)
+
+
 
 module.exports = router;
