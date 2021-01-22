@@ -1,3 +1,5 @@
+const path = require('path')
+
 const express = require('express')
 
 const morgan = require('morgan')
@@ -21,10 +23,19 @@ const tourRouter = require('./routes/tourRoutes')
 const userRouter = require('./routes/userRoutes')
 
 const reviewRouter = require('./routes/reviewRoutes')
+const viewRouter = require('./routes/viewRoutes')
 
 const app = express()
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'))
+
 //1- MIDDLEWARE GLOBAL
+//Serving static files
+
+//app.use(express.static(`${__dirname}/public`))
+app.use(express.static(path.join(__dirname, 'public')))
+
 // Segurança aos Header Http
 app.use(helmet())
 
@@ -57,9 +68,7 @@ app.use(hpp({
     whitelist: ['duration', 'ratingsQuantity', 'maxGroupSize', 'ratingsAverage', 'difficulty', 'price']
 }))
 
-//Serving static files
 
-app.use(express.static(`${__dirname}/public`))
 
 /* app.use((req, res, next) =>{
     console.log("Olá!!! Este é um middleware")
@@ -82,8 +91,10 @@ next();
 //app.delete('/api/v1/passeios/:id', deleteTour)
 //app.post('/api/v1/passeios', createTour)
 
+
+
  
- 
+app.use('/', viewRouter); 
 app.use('/api/v1/passeios', tourRouter);
 app.use('/api/v1/vereadores', userRouter);
 app.use('/api/v1/reviews', reviewRouter);

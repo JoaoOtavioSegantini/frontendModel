@@ -1174,6 +1174,7 @@ body {
 }
 .card__footer-value {
   font-weight: 700;
+  
 }
 .card__footer-text {
   color: #999;
@@ -1321,4 +1322,7 @@ body {
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
+}
+div.card__data span {
+  text-transform: capitalize;
 }
