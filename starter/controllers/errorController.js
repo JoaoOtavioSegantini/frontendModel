@@ -24,32 +24,65 @@ const handleDuplicateFieldsDB = err => {
 const handleJWTError = err => new AppError('Token inválido. Por favor acesse a tela de log in novamente!!',401);
 const handleJWTExpiredError = err => new AppError('Token expirado. Acesse a tela de login para renovar o seu token!', 401)
 
-const sendErrorDev = (err, res) => {
-    res.status(err.statusCode).json({
-        status: err.status,
-        error: err,
-        message: err.message,
-        stack: err.stack
-    })
-}
+const sendErrorDev = (err, req, res) => {
+     // A) API
+    if(req.originalUrl.startsWith('/api')){
+        res.status(err.statusCode).json({
+            status: err.status,
+            error: err,
+            message: err.message,
+            stack: err.stack
+        });
+    } 
+    // B) RENDERED WEBSITE
+    console.error('ERROR 💥', err);
+    return  res.status(err.statusCode).render('error', {
+            title: 'Ops...ocorreu algum erro!',
+            msg: err.message
 
-const sendErrorProd = (err, res) =>{
+        });
+    };
+   
+
+
+const sendErrorProd = (err, req, res) =>{
+     // A) API
+  if(req.originalUrl.startsWith('/api')){
+       // A) Operational, trusted error: send message to client
+        if(err.isOperational) {
+         return res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message
+        });
+        } 
+        // B) Programming or other unknown error: don't leak error details
+        // 1) Log error
+        console.error('ERROR', err)
+
+        //2) Enviar mensagem genérica
+         return res.status(500).json({
+            status: 'error',
+            message: 'Ops...Alguma coisa deu errado!'
+        });
+      }
+// B) RENDERED WEBSITE
+  // A) Operational, trusted error: send message to client
     if(err.isOperational) {
-    res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message
-    })
-   } else {
-       // 1) Log error
-       console.error('ERROR', err)
-
-       //2) Enviar mensagem genérica
-       res.status(500).json({
-           status: 'error',
-           message: 'Ops...Alguma coisa deu errado!'
-       })
+        console.log(err);
+    return res.status(err.statusCode).render('error', {
+        title: 'Ops...ocorreu algum erro!',
+        msg: err.message
+    });
    }
-}
+  // B) Programming or other unknown error: don't leak error details
+  // 1) Log error
+   console.error('ERROR 💥', err);
+   // 2) Send generic message
+   return res.status(err.statusCode).render('error', {
+     title: 'Something went wrong!',
+     msg: 'Please try again later.'
+   });
+};
 
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
@@ -58,10 +91,11 @@ module.exports = (err, req, res, next) => {
 
     if(process.env.NODE_ENV === 'development'){
        
-        sendErrorDev(err, res)
+        sendErrorDev(err, req, res)
         
     } else if (process.env.NODE_ENV === 'production'){
-        let error = { ...err }
+        let error = { ...err };
+        error.message = err.message;
       
         if(err.name === 'CastError')  error = handleCastErrorDB(error)
         if (error.code === 11000) error = handleDuplicateFieldsDB(error);
@@ -69,7 +103,7 @@ module.exports = (err, req, res, next) => {
         if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
         if (error.name === 'TokenExpiredError') error = handleJWTExpiredError(error);
 
-       sendErrorProd(error, res)
+       sendErrorProd(error, req, res)
 
     }
 

@@ -122,6 +122,7 @@ exports.protect = catchAsync( async(req, res, next) => {
      return next( new AppError('O usuário recentemente mudou a senha. Por favor, acesse a tela de login novamente!', 401))
    }
    req.user = freshUser;
+   res.locals.user = freshUser;
   next();
 
 });

@@ -1,6 +1,6 @@
 const Tour = require('./../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
-const User = require('../models/userModel')
+const AppError = require('../utils/appError')
 
 exports.getOverview = catchAsync(async(req, res, next) => {
     //1 Puxar os dados da excursão da coleção
@@ -23,6 +23,11 @@ exports.getTour = catchAsync(async(req, res, next) => {
         path: 'reviews',
         fields: 'review rating user'
     });
+
+    if(!tour) {
+        return next(new AppError('Não há nenhuma excursão com este nome', 404));
+    };
+
     res.status(200).render('tour', {
         title: 'The Forest Hiker Tour',
         tour
@@ -36,3 +41,9 @@ exports.getUser = catchAsync(async(req,res) => {
     title: 'Acesse a sua conta'
     })
 });
+
+exports.getAccount = (req, res) => {
+    res.status(200).render('account', {
+        title: 'Sua conta'
+        });
+};
