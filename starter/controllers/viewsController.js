@@ -1,5 +1,6 @@
 const Tour = require('./../models/tourModel');
-const catchAsync = require('../utils/catchAsync')
+const catchAsync = require('../utils/catchAsync');
+const User = require('../models/userModel')
 
 exports.getOverview = catchAsync(async(req, res, next) => {
     //1 Puxar os dados da excursão da coleção
@@ -16,7 +17,7 @@ exports.getOverview = catchAsync(async(req, res, next) => {
     });
 });
 
-exports.getTour = catchAsync(async(req, res) => {
+exports.getTour = catchAsync(async(req, res, next) => {
 
     const tour = await Tour.findOne({ slug: req.params.slug }).populate({
         path: 'reviews',
@@ -26,4 +27,12 @@ exports.getTour = catchAsync(async(req, res) => {
         title: 'The Forest Hiker Tour',
         tour
     });
+});
+
+exports.getUser = catchAsync(async(req,res) => {
+   // const user = await User.findOne(req.params.id);
+ //   const password = await User.findOne(req.params.password);
+ res.status(200).render('login', {
+    title: 'Acesse a sua conta'
+    })
 });

@@ -11,7 +11,7 @@ exports.deleteOne = Model => catchAsync(async (req, res, next) =>{
              return next(new AppError('Nenhum documento foi encontrada com esse ID', 404));
            }
                res.status(204).json({
-                 status: 'sucess',
+                 status: 'success',
                  data: null
              });
          
@@ -28,7 +28,7 @@ exports.updateOne = Model => catchAsync(async (req, res, next) =>{
        return next(new AppError('Nenhum documento foi encontrada com esse ID', 404));
      }
     res.status(200).json({
-        status: 'sucess',
+        status: 'success',
         data: {
             data: doc
         }
@@ -61,7 +61,7 @@ exports.updateOne = Model => catchAsync(async (req, res, next) =>{
     }
     
          res.status(200).json({
-         status: 'sucess',
+         status: 'success',
          data: {
             data: doc
           }
@@ -79,7 +79,7 @@ exports.updateOne = Model => catchAsync(async (req, res, next) =>{
   //para testes 
    //doc = await features.query.explain();
       res.status(200).json({
-          status: 'sucess',
+          status: 'success',
           results: doc.length,
           data: {
               data: doc

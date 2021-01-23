@@ -26,7 +26,7 @@ const createandSendToken = (user, statusCode, res) => {
   user.password = undefined;
 
   res.status(statusCode).json({
-    status: 'sucess',
+    status: 'success',
     token,
     data: {
       user
@@ -89,6 +89,8 @@ exports.protect = catchAsync( async(req, res, next) => {
    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
     token = req.headers.authorization.split(' ')[1];
 
+   } else if (req.cookies.jwt) {
+     token = req.cookies.jwt;
    }
 
    if(!token){
@@ -115,6 +117,47 @@ exports.protect = catchAsync( async(req, res, next) => {
   next();
 
 });
+// Only for rendered pages, no errors!
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+
+      // 2) Check if user still exists
+      const freshUser = await User.findById(decoded.id);
+      if (!freshUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (freshUser.changePasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER
+      res.locals.user = freshUser;
+     return  next();
+    } 
+  
+  next();
+});
+
+/* exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles ['admin', 'lead-guide']. role='user'
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403)
+      );
+    }
+
+    next();
+  };
+}; */
 
 exports.restrictTo = (...roles) => {
 
