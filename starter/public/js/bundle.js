@@ -6606,10 +6606,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.displayMap = void 0;
 
 var displayMap = function displayMap(locations) {
-  mapboxgl.accessToken = undefined;
+  mapboxgl.accessToken = 'pk.eyJ1Ijoiam9hb3NlZ2FudGluaSIsImEiOiJja2s3ZGdsMDYwYmQwMnVtbzNidzlpc3JpIn0.8AdIURp6z7PbiaPAKypijw';
   var map = new mapboxgl.Map({
     container: 'map',
-    style: undefined,
+    style: 'mapbox://styles/joaosegantini/ckk7eo7ox0bf017s7qv75ivcz',
     scrollZoom: false
     /* center: [-47.248088, -21.828396999999974 ],
     zoom: 10,
@@ -9008,7 +9008,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60982" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60694" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

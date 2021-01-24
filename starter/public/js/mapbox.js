@@ -1,10 +1,10 @@
 
 
 export const displayMap = locations => {
-    mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiam9hb3NlZ2FudGluaSIsImEiOiJja2s3ZGdsMDYwYmQwMnVtbzNidzlpc3JpIn0.8AdIURp6z7PbiaPAKypijw';
     var map = new mapboxgl.Map({
     container: 'map',
-    style: process.env.MAPBOX_STYLE,
+    style: 'mapbox://styles/joaosegantini/ckk7eo7ox0bf017s7qv75ivcz',
     scrollZoom: false
     /* center: [-47.248088, -21.828396999999974 ],
     zoom: 10,
