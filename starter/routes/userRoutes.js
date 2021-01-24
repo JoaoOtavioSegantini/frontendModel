@@ -15,6 +15,8 @@ router
 router
 .get('/logout', authController.logout);
 
+
+
 router.use(authController.protect);
 
 router
@@ -27,7 +29,7 @@ router
  .patch('/updateMyPassword', authController.updatePassword)
 
 router
- .patch('/updateMe', userController.updateMe)
+ .patch('/updateMe', userController.uploadUserPhoto, userController.resizeUserPhoto ,userController.updateMe)
 
 router
  .delete('/deleteMe', userController.deleteMe)
